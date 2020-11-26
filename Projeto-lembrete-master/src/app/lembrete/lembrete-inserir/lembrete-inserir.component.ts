@@ -1,6 +1,6 @@
 import { formatNumber } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { from } from 'rxjs';
 import { Lembrete } from '../lembrete.model';
@@ -18,8 +18,19 @@ export class LembreteInserirComponent implements OnInit{
   private idLembrete: string;
   public lembrete: Lembrete;
   public estaCarregando: boolean = false;
+  public form: FormGroup;
 
   ngOnInit() {
+    this.form = new FormGroup({
+      dataCadastro: new FormControl(null,{validators:
+      [Validators.required,Validators.minLength(3)]}),
+      
+    })
+
+
+
+
+
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       if (paramMap.has("idLembrete")) {
         this.modo = "editar";
@@ -33,6 +44,13 @@ export class LembreteInserirComponent implements OnInit{
             dataEntrega: dadosLem.dataEntrega,
             atividade: dadosLem.atividade
           };
+          this.form.setValue({
+            dataCadastro: this.lembrete.dataCadastro,
+            dataEntrega: this.lembrete.dataEntrega,
+            atividade: this.lembrete.atividade
+          })
+
+          console.log(this.form);
         });
       }
       else {
@@ -44,28 +62,28 @@ export class LembreteInserirComponent implements OnInit{
 
   constructor(public lembreteService: LembreteService, public route: ActivatedRoute){}
 
-  onSalvarLembrete(form: NgForm) {
+  onSalvarLembrete() {
 
-    if(form.invalid) {
+    if(this.form.invalid) {
       return;
     }
     this.estaCarregando = true;
     if(this.modo === "criar") {
       this.lembreteService.adicionarLembrete(
-        form.value.dataCadastro,
-        form.value.dataEntrega,
-        form.value.atividade
+        this.form.value.dataCadastro,
+        this.form.value.dataEntrega,
+        this.form.value.atividade
       )
     }
     else {
       this.lembreteService.atualizarLembrete(
         this.idLembrete,
-        form.value.dataCadastro,
-        form.value.dataEntrega,
-        form.value.atividades
+        this.form.value.dataCadastro,
+        this.form.value.dataEntrega,
+        this.form.value.atividades
       )
     }
 
-    form.resetForm();
+    this.form.reset();
   }
 }

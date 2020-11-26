@@ -16,25 +16,23 @@ export class LembreteService {
   }
 
   getLembretes(): void {
-    this.HttpClient.get<{mensagem: String,
-      lembretes: any}>('http://localhost:3000/api/lembretes')
+    this.HttpClient.get<{mensagem: string, lembretes: any}>('http://localhost:3000/api/lembretes'
+    )
       .pipe(map((dados) => {
-        return dados.lembretes.map(lembrete => {
+        return dados.lembretes.map(lembr => {
           return {
-            id: lembrete._id,
-            dataCadastro: lembrete.dataCadastro,
-            dataEntrega: lembrete.dataEntrega,
-            atividade: lembrete.atividade
+            id: lembr._id,
+            dataCadastro: lembr.dataCadastro,
+            dataEntrega: lembr.dataEntrega,
+            atividade: lembr.atividade
           }
         })
       }))
-      .subscribe(
-        (lembretes) => {
+      .subscribe((lembretes) => {
           this.lembretes = lembretes;
-          this.listaLembretesAtualizada.next([...this.lembretes]);
-        }
-      )
-  }
+          this.listaLembretesAtualizada.next([...this.lembretes])
+        })
+      }
 
 
   getListaDeLembretesAtualizadaObservable(){
@@ -70,10 +68,33 @@ export class LembreteService {
 
   atualizarLembrete(id: string, dataCadastro: string, dataEntrega: string, atividade: string) {
     const lembrete: Lembrete = {id, dataCadastro, dataEntrega, atividade};
-    this.HttpClient.put(`http://localhost:3000/api/lembretes/${id}`, lembrete)
+    let lembreteData: Lembrete | FormData;
+    if(typeof(atividade) === "object"){
+      lembreteData = new FormData();
+      lembreteData.append("id",id);
+      lembreteData.append("dataCadastro", dataCadastro);
+      lembreteData.append("dataEntrega", dataEntrega);
+      lembreteData.append("atividade", atividade);
+    } 
+    else{
+      lembreteData = {
+        id:id,
+        dataCadastro:dataCadastro,
+        dataEntrega:dataEntrega,
+        atividade: atividade
+      }
+    }
+
+    this.HttpClient.put(`http://localhost:3000/api/lembretes/${id}`, lembreteData)
     .subscribe((res => {
       const copia = [...this.lembretes];
       const indice = copia.findIndex(lem => lem.id === lembrete.id);
+      const lembrete: Lembrete = {
+        id:id,
+        dataCadastro:dataCadastro,
+        dataEntrega:dataEntrega,
+        atividade: atividade
+      }
       copia[indice] = lembrete;
       this.lembretes = copia;
       this.listaLembretesAtualizada.next([...this.lembretes]);
@@ -83,7 +104,8 @@ export class LembreteService {
 
   getLembrete(idLembrete: string) {
     //return {...this.lembretes.find((lem) => lem.id === idLembrete)};
-    return this.HttpClient.get<{_id: string, dataCadastro: string, dataEntrega: string, atividade: string}>
+    return this.HttpClient.get<{
+      _id: string, dataCadastro: string, dataEntrega: string, atividade: string}>
     ('http://localhost:3000/api/lembretes/${idLembrete}');
   }
 }
