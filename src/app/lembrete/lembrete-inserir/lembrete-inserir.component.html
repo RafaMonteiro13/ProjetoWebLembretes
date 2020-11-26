@@ -1,0 +1,26 @@
+<h2>Gerenciador de lembretes</h2>
+
+<mat-card>
+  <mat-spinner *ngIf="estaCarregando"></mat-spinner>
+  <form (submit)="onSalvarLembrete(lembreteForm)" *ngIf="!estaCarregando" #lembreteForm="ngForm">
+  <mat-form-field>
+    <input required type="date" matInput placeholder="Data de cadastro" name="dataCadastro" [ngModel]="lembrete?.dataCadastro" #dataCadastro="ngModel"/>
+
+    <mat-error *ngIf="dataCadastro.invalid">Digite uma data válida</mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <input required type="date" matInput placeholder="Data prevista para entregar" name="dataEntrega" [ngModel]="lembrete?.dataEntrega" #dataEntrega="ngModel"/>
+
+    <mat-error *ngIf="dataEntrega.invalid">Digite uma data válida</mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <input required minlength="4" type="text" matInput placeholder="Atividade a ser realizada" name="atividade" [ngModel]="lembrete?.atividade" #atividade="ngModel">
+
+    <mat-error *ngIf="atividade.invalid">Digite um nome válido</mat-error>
+  </mat-form-field>
+
+  <button color="accent" mat-raised-button>Salvar Lembrete</button>
+</form>
+</mat-card>

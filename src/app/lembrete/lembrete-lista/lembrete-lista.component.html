@@ -1,0 +1,16 @@
+<mat-spinner *ngIf="estaCarregando"></mat-spinner>
+<mat-accordion *ngIf="lembretes.length > 0 && !estaCarregando">
+    <mat-expansion-panel *ngFor="let lembrete of lembretes">
+      <mat-expansion-panel-header>Nome: {{lembrete.atividade}}</mat-expansion-panel-header>
+      <p>Data de Cadastro: {{lembrete.dataCadastro}}</p>
+      <p>Data de Entrega: {{lembrete.dataEntrega}}</p>
+
+      <mat-action-row>
+        <a mat-button color="accent" [routerLink]="['/editar', lembrete.id]">EDITAR</a>
+        <button mat-button color="accent" (click)="onDelete(lembrete.id)">REMOVER</button>
+      </mat-action-row>
+
+    </mat-expansion-panel>
+</mat-accordion>
+
+<p class="mat-body-1" style="text-align: center;" *ngIf="lembretes.length <= 0 && !estaCarregando"> Nenhuma atividade cadatrada</p>

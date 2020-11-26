@@ -1,0 +1,10 @@
+<mat-toolbar color="accent">
+  <span><a routerLink="/lista">Atividades</a></span>
+  <span class="separador"></span>
+  <ul>
+    <li><a mat-button routerLink="/criar" routerLinkActive="mat-primary">Novo Lembrete</a></li>
+  </ul>
+  <ul>
+    <li><a mat-button (click)="logout()" routerLinkActive="mat-primary">Logout</a></li>
+  </ul>
+</mat-toolbar>
